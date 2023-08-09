@@ -1,64 +1,57 @@
+import managers.InMemoryTaskManager;
+import managers.Managers;
+import managers.TaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
+
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        InMemoryTaskManager manager = new InMemoryTaskManager();
-        Task task1 = new Task("task1", "hello", "NEW");
-        int taskId1 = manager.createTask(task1);
-        //Создание Epic
-        Epic epic1 = new Epic("Epic 1", "Epic 1 description", "NEW");
-        int epicId1 = manager.createEpic(epic1);
+        TaskManager taskManager = Managers.getDefault();
 
-        //Создание Subtask
-        Subtask subtask1 = new Subtask("Subtask 1", "Subtask 1 description", "NEW", epicId1);
-        int subtaskId1 = manager.createSubtask(subtask1);
 
-        //Обновление Task
-        Task taskToUpdate = manager.getTaskById(taskId1);
-        taskToUpdate.setName("Task 1 - Updated");
-        manager.updateTask(taskToUpdate);
 
-        //Обновление Epic
-        Epic epicToUpdate = manager.getEpicById(epicId1);
-        epicToUpdate.setDescription("Epic 1 - Updated");
-        manager.updateEpic(epicToUpdate);
+        // create a task
+        Task task = new Task("Task 1", "Description 1", Status.NEW);
+        int taskId = taskManager.createTask(task);
+        System.out.println("Created task with ID " + taskId);
 
-        //Обновление Subtask
-        Subtask subtaskToUpdate = manager.getSubtaskById(subtaskId1);
-        subtaskToUpdate.setName("Subtask 1 - Updated");
-        manager.updateSubtask(subtaskToUpdate);
+        // update the task
+        task.setDescription("Updated description");
+        taskManager.updateTask(task);
 
-        //Получение Tasks
-        List<Task> tasks = manager.getTasks();
-        for (Task task : tasks) {
-            System.out.println("Task: " + task.getName());
-        }
+        // create an epic
+        Epic epic = new Epic("Epic 1", "Epic description", Status.NEW);
+        int epicId = taskManager.createEpic(epic);
+        System.out.println("Created epic with ID " + epicId);
 
-        //Получение Epics
-        List<Epic> epics = manager.getEpics();
-        for (Epic epic : epics) {
-            System.out.println("Epic: " + epic.getName());
-        }
+        // create a subtask
+        Subtask subtask = new Subtask("Subtask 1", "Subtask description", Status.NEW, epicId);
+        int subtaskId = taskManager.createSubtask(subtask);
+        System.out.println("Created subtask with ID " + subtaskId);
 
-        //Получение Subtasks
-        List<Subtask> subtasks = manager.getSubtask();
-        for (Subtask subtask : subtasks) {
-            System.out.println("Subtask: " + subtask.getName());
-        }
+        // update the subtask
+        subtask.setDescription("Updated subtask description");
+        taskManager.updateSubtask(subtask);
 
-        //Получение Epic Subtasks
-        List<Subtask> epicSubtasks = manager.getEpicsSubtask(epicId1);
-        for (Subtask subtask : epicSubtasks) {
-            System.out.println("Epic Subtask: " + subtask.getName());
-        }
+        // get the task
+        Task retrievedTask = taskManager.getTaskById(taskId);
+        System.out.println("Retrieved task: " + retrievedTask);
 
-        //Удаление Task
-        manager.deleteSpecificTask(taskId1);
+        // get the subtask
+        Subtask retrievedSubtask = taskManager.getSubtaskById(subtaskId);
+        System.out.println("Retrieved subtask: " + retrievedSubtask);
 
-        //Удаление Epic
-        manager.deleteSpecificEpic(epicId1);
 
-        //Удаление Subtasks
-        manager.deleteSubtasks();
+        // get the epic
+        Epic retrievedEpic = taskManager.getEpicById(epicId);
+        System.out.println("Retrieved epic: " + retrievedEpic);
+
+        // get the history of subtasks
+        taskManager.getHistory();
+        System.out.println(taskManager.getHistory());
     }
 }

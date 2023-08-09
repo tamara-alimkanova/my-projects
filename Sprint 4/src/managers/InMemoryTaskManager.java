@@ -1,13 +1,23 @@
+package managers;
+
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     protected int genId;
+    protected final HistoryManager historyManager;
     protected HashMap<Integer, Task> task = new HashMap<>();
     protected HashMap<Integer, Subtask> subtask = new HashMap<>();
     protected HashMap<Integer, Epic> epic = new HashMap<>();
 
+    public InMemoryTaskManager(){
+        this.historyManager = Managers.getDefaultHistory();
+    }
     @Override
     public int createTask(Task task) {
         task.setId(genId);
@@ -27,6 +37,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTasks() {
         this.task.clear();
+    }
+
+    @Override
+    public void deleteTask(int id) {
+
     }
 
     @Override
@@ -74,6 +89,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void deleteEpic(int id) {
+
+    }
+
+    @Override
     public void deleteSpecificEpic(int id) {
         if (epic.containsKey(id)) {
             Epic tempEpic = epic.get(id);
@@ -97,7 +117,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int createSubtask(Subtask subtask) {
-        Epic tempEpic = epic.get(subtask.epicId);
+        Epic tempEpic = epic.get(subtask.getEpicId());
         if (tempEpic != null) {
             subtask.setId(genId++);
             subtask.setStatus("NEW");
@@ -106,7 +126,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicStatus(tempEpic.getId());
             return subtask.getId();
         } else {
-            System.out.println("Error: There is no Epic with such ID.");
+            System.out.println("Error: There is no tasks.Epic with such ID.");
             return 0;
         }
     }
@@ -148,6 +168,21 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskById(int id) {
         return subtask.get(id);
+    }
+
+    @Override
+    public List<Subtask> getSubtasks() {
+        return null;
+    }
+
+    @Override
+    public List<Subtask> getEpicSubtasks(int epicId) {
+        return null;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return null;
     }
 
     @Override
